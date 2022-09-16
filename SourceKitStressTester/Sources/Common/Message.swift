@@ -76,9 +76,14 @@ public enum SourceKitError: Error {
   }
 }
 
-public enum SourceKitErrorReason: String, Codable {
-  case errorResponse, errorTypeInResponse, errorDeserializingSyntaxTree,
-       sourceAndSyntaxTreeMismatch, missingExpectedResult, errorWritingModule
+public enum SourceKitErrorReason: Codable {
+  case errorResponse
+  case errorTypeInResponse
+  case errorDeserializingSyntaxTree
+  case sourceAndSyntaxTreeMismatch
+  case missingExpectedResult
+  case duplicateResult(name: String)
+  case errorWritingModule
 }
 
 public enum RequestInfo {
@@ -477,6 +482,8 @@ extension SourceKitErrorReason: CustomStringConvertible {
       return "SourceKit returned a syntax tree that doesn't match the expected source"
     case .missingExpectedResult:
       return "SourceKit returned a response that didn't contain the expected result"
+    case .duplicateResult(name: let name):
+      return "SourceKit returned a response that contained the result '\(name)' twice"
     case .errorWritingModule:
       return "Error while writing out module"
     }

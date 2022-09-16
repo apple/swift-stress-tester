@@ -428,21 +428,45 @@ class SourceKitDocument {
   }
 
   private func checkExpectedCompletionResult(_ expected: ExpectedResult, in response: SourceKitdResponse, info: RequestInfo) throws {
+    /// Struct that defines a code completion result to determine if there are duplicate results.
+    struct CodeCompletionResultSpec: Hashable {
+      let description: String
+      let type: String
+      let usr: String
+
+      init(_ result: SourceKitdResponse.Dictionary) {
+        self.description = result.getString(.key_Description)
+        self.type = result.getString(.key_TypeName)
+        self.usr = result.getString(.key_AssociatedUSRs)
+      }
+    }
     let matcher = CompletionMatcher(for: expected)
     var found = false
+    var foundDuplicate: CodeCompletionResultSpec? = nil
+    var seenResults = Set<CodeCompletionResultSpec>()
     response.value.getArray(.key_Results).enumerate { (_, item) -> Bool in
       let result = item.getDictionary()
       found = matcher.match(result.getString(.key_Name), ignoreArgLabels: shouldIgnoreArgs(of: expected, for: result))
+      let resultSpec = CodeCompletionResultSpec(result)
+      if foundDuplicate == nil, !seenResults.insert(resultSpec).inserted {
+        foundDuplicate = resultSpec
+      }
       return !found
     }
-    if !found {
+    lazy var truncatedResponseText = {
       // FIXME: code completion responses can be huge, truncate them for now.
       let maxSize = 25_000
       var responseText = response.description
       if responseText.count > maxSize {
         responseText = responseText.prefix(maxSize) + "[truncated]"
       }
-      throw SourceKitError.failed(.missingExpectedResult, request: info, response: responseText.trimmingCharacters(in: .newlines))
+      return responseText
+    }()
+    if !found {
+      throw SourceKitError.failed(.missingExpectedResult, request: info, response: truncatedResponseText.trimmingCharacters(in: .newlines))
+    }
+    if let foundDuplicate = foundDuplicate {
+      throw SourceKitError.failed(.duplicateResult(name: foundDuplicate.description), request: info, response: truncatedResponseText.trimmingCharacters(in: .newlines))
     }
   }
 
