@@ -39,7 +39,7 @@ class StressTesterToolTests: XCTestCase {
       XCTAssertEqual(defaults.format, .humanReadable)
       XCTAssertEqual(defaults.limit, nil)
       XCTAssertEqual(defaults.page, Page())
-      XCTAssertEqual(defaults.requests, [.ide])
+      XCTAssertEqual(defaults.requests, [.all])
       XCTAssertEqual(defaults.dryRun, false)
       XCTAssertEqual(defaults.reportResponses, false)
       XCTAssertEqual(defaults.conformingMethodsTypeList, ["s:SQ", "s:SH"])

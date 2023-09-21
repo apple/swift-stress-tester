@@ -69,7 +69,7 @@ public struct SwiftCWrapperTool {
     let astBuildLimit = try astBuildLimitEnv.get(from: environment)
     let requestDurationsOutputFile = try requestDurationsOutputFileEnv.get(from: environment).map(URL.init(fileURLWithPath:))
     let rewriteModes = try rewriteModesEnv.get(from: environment) ?? [.none, .concurrent, .insideOut]
-    let requestKinds = RequestKind.reduce(try requestKindsEnv.get(from: environment) ?? [.ide])
+    let requestKinds = RequestKind.reduce(try requestKindsEnv.get(from: environment) ?? [.all])
     let conformingMethodTypes = try conformingMethodTypesEnv.get(from: environment)
     let maxJobs = try maxJobsEnv.get(from: environment)
     let dumpResponsesPath = try dumpResponsesPathEnv.get(from: environment)

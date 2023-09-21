@@ -260,7 +260,7 @@ class SwiftCWrapperToolTests: XCTestCase {
 
   private func assertInvocationsMatch(invocations: [Substring],
                                       rewriteModes: [RewriteMode],
-                                      requestKinds: [RequestKind] = RequestKind.ideRequests) {
+                                      requestKinds: [RequestKind] = RequestKind.allRequests) {
     for invocation in invocations {
       XCTAssertTrue(invocation.contains("--format json"),
                     "Missing json format in '\(invocation)'")

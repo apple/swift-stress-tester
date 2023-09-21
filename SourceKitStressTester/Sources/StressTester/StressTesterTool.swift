@@ -64,7 +64,7 @@ public struct StressTesterTool: ParsableCommand {
 
   @Option(name: [.customLong("request"), .customShort("r")],
           help: "One of '\(RequestKind.allCases.map({ $0.rawValue }).joined(separator: "\", \""))'")
-  public var requests: [RequestKind] = [.ide]
+  public var requests: [RequestKind] = [.all]
 
   @Flag(name: .shortAndLong, help: """
     Dump the sourcekitd requests the stress tester would perform instead of \
