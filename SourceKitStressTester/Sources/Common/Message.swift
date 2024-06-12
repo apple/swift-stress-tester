@@ -633,16 +633,13 @@ public enum RequestKind: String, CaseIterable, CustomStringConvertible, Codable 
   case collectExpressionType = "CollectExpressionType"
   case format = "Format"
   case testModule = "TestModule"
-  case ide = "IDE"
   case all = "All"
 
   public var description: String { self.rawValue }
 
-  public static let ideRequests: [RequestKind] =
+  public static let allRequests: [RequestKind] =
     [.cursorInfo, .rangeInfo, .codeComplete, .collectExpressionType, .format,
-     .typeContextInfo, .conformingMethodList]
-  public static let allRequests: [RequestKind] = ideRequests +
-    [.testModule]
+     .typeContextInfo, .conformingMethodList, .testModule]
 
   public static func byName(_ name: String) -> RequestKind? {
     let lower = name.lowercased()
@@ -653,8 +650,6 @@ public enum RequestKind: String, CaseIterable, CustomStringConvertible, Codable 
   public static func reduce(_ kinds: [RequestKind]) -> Set<RequestKind> {
     return Set(kinds.flatMap { kind -> [RequestKind] in
       switch kind {
-      case .ide:
-        return ideRequests
       case .all:
         return allRequests
       default:
